@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Air Liquide | Portail FLOXAL</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body { font-family: 'Roboto', sans-serif; background-color: #ffffff; color: #333333; margin: 0; padding: 0; }
+    header { padding: 20px; border-bottom: 2px solid #EBEBEB; }
+    header h1 { color: #003264; font-weight: 300; margin: 0; font-size: 24px; }
+    header h1 span { color: #D7001E; font-weight: 700; }
+    
+    .tab-container { display: flex; background-color: #F8F9FA; border-bottom: 1px solid #ccc; position: sticky; top: 0; z-index: 1000; overflow-x: auto; }
+    .tab-button { flex: 1; background-color: transparent; border: none; border-bottom: 3px solid transparent; padding: 15px 10px; font-size: 14px; font-weight: 700; color: #003264; cursor: pointer; font-family: 'Roboto', sans-serif; white-space: nowrap; }
+    .tab-button:hover { background-color: #EBEBEB; }
+    .tab-button.active { border-bottom: 3px solid #D7001E; color: #00349B; }
+    
+    .tab-content { display: none; padding: 20px; }
+    .tab-content.active { display: block; }
+    
+    .btn-primary { background-color: #00349B; color: #ffffff; border: none; padding: 10px 20px; font-weight: 700; cursor: pointer; font-family: 'Roboto', sans-serif; border-radius: 4px; }
+    .btn-primary:hover { background-color: #D7001E; }
+    .btn-itineraire { display: inline-block; margin-top: 8px; padding: 6px 12px; background-color: #D7001E; color: #ffffff !important; border-radius: 4px; text-decoration: none; font-size: 12px; font-weight: bold; }
+
+    .filter-container { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; background-color: #F8F9FA; padding: 15px; border-radius: 8px; border: 1px solid #EBEBEB; }
+    .filter-dropdown { position: relative; display: inline-block; flex: 1; min-width: 200px; }
+    .filter-btn { width: 100%; padding: 12px; background: #fff; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-family: 'Roboto'; font-size: 14px; text-align: left; display: flex; justify-content: space-between; }
+    .dropdown-content { display: none; position: absolute; background-color: #fff; width: 100%; max-height: 250px; overflow-y: auto; box-shadow: 0 8px 16px rgba(0,0,0,0.1); z-index: 101; border: 1px solid #ccc; border-radius: 4px; padding: 10px; box-sizing: border-box; }
+    .dropdown-content label { display: block; margin-bottom: 8px; font-size: 14px; cursor: pointer; }
+    .autocomplete-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Roboto'; font-size: 14px; box-sizing: border-box; }
+
+    .card { border: 1px solid #EBEBEB; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); background-color: #ffffff; }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #EBEBEB; padding-bottom: 15px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+    .card-header h3 { margin: 0; color: #003264; font-size: 20px; font-weight: 700; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .meta-item { font-size: 13px; }
+    .meta-label { color: #666; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+    .meta-value { color: #333; font-weight: 700; word-break: break-word; }
+    .meta-value a { color: #00349B; text-decoration: none; }
+    .text-box { background-color: #F8F9FA; border-radius: 4px; padding: 15px; margin-top: 15px; border: 1px solid #EBEBEB; }
+    .text-box h4 { margin: 0 0 10px 0; font-size: 14px; color: #00349B; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+    .text-box.tech { border-left: 3px solid #D7001E; }
+    .text-box.tech h4 { color: #D7001E; }
+    .badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; color: white; letter-spacing: 0.5px; }
+    textarea { width: 100%; box-sizing: border-box; font-family: 'Roboto', sans-serif; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; }
+    .edit-btn { background: none; border: none; color: #00349B; cursor: pointer; font-size: 12px; font-weight: bold; text-decoration: underline; padding: 0; }
+
+    .doc-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .doc-table th { background-color: #003264; color: #ffffff; padding: 12px 15px; text-align: left; font-weight: 700; }
+    .doc-table td { padding: 12px 15px; border-bottom: 1px solid #EBEBEB; color: #333333; }
+    .doc-table tr:hover { background-color: #F8F9FA; }
+    .doc-table a { color: #00349B; text-decoration: none; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Air Liquide <span>|</span> Portail FLOXAL</h1>
+  </header>
+
+  <div class="tab-container">
+    <button class="tab-button active" onclick="openTab(event, 'Carnet')">Carnet</button>
+    <button class="tab-button" onclick="openTab(event, 'Cartographie')">Carte</button>
+    <button class="tab-button" onclick="openTab(event, 'Flux')">Tickets</button>
+    <button class="tab-button" onclick="openTab(event, 'Doc')">Docs</button>
+  </div>
+
+  <div id="Carnet" class="tab-content active">
+    <div class="filter-container" id="zoneFiltres" style="display: none;">
+      <div class="filter-dropdown">
+        <input type="text" id="client-input" class="autocomplete-input" list="client-options" placeholder="Client..." oninput="filtrerCarnet()">
+        <datalist id="client-options"></datalist>
+      </div>
+      <div class="filter-dropdown">
+        <button class="filter-btn" onclick="toggleDropdown('cef-dropdown')">Secteur CEF <span>▼</span></button>
+        <div id="cef-dropdown" class="dropdown-content"></div>
+      </div>
+      <div class="filter-dropdown">
+        <button class="filter-btn" onclick="toggleDropdown('statut-dropdown')">Statut <span>▼</span></button>
+        <div id="statut-dropdown" class="dropdown-content"></div>
+      </div>
+    </div>
+    <div id="resultatsCarnet"><i>Connexion au serveur en cours...</i></div>
+  </div>
+
+  <div id="Cartographie" class="tab-content">
+    <div id="map-container" style="position: relative;">
+      <div id="map-loading" style="padding: 20px; background: #F8F9FA; border: 1px solid #ccc; border-radius: 8px;">
+        <i>Initialisation de la carte...</i>
+      </div>
+      <div id="map" style="width: 100%; height: 600px; border-radius: 8px; border: 1px solid #ccc; display: none; z-index: 1;"></div>
+    </div>
+    <div id="map-error" style="display:none; color: #D7001E; padding: 15px; margin-top: 15px;"></div>
+  </div>
+
+  <div id="Flux" class="tab-content">
+    <input type="text" id="champRechercheFlux" onkeyup="filtrerFlux()" placeholder="Rechercher un ticket..." style="padding: 12px; width: 100%; box-sizing: border-box; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Roboto'; font-size: 14px;">
+    <div id="resultatsFlux"><i>Chargement des tickets IMPact...</i></div>
+  </div>
+
+  <div id="Doc" class="tab-content">
+    <input type="text" id="champRechercheDoc" onkeyup="filtrerDocuments()" placeholder="Filtrer les documents..." style="padding: 12px; width: 100%; box-sizing: border-box; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Roboto'; font-size: 14px;">
+    <div id="resultatsRecherche"><i>Lecture des documents...</i></div>
+  </div>
+
+  <script>
+    // 🔴 COLLE TON LIEN GOOGLE SCRIPT ENTRE LES GUILLEMETS CI-DESSOUS :
+    const API_URL = "https://script.google.com/a/macros/airliquide.com/s/AKfycbxngKtHCqhcmOsUcjjXStEPcrdQprDoR0bzJTH4vGed1FtCozgADTZq6Gw4tXrphMb5/execI";
+
+    var sitesDataGlobaux = [];
+    var fluxDataGlobaux = []; 
+    var map = null, markersLayer = null, isMapLoading = false, isMapLoaded = false;
+
+    // Lancement au démarrage via l'API Web
+    lancerChargementSites();
+    lancerChargementDocuments();
+    lancerChargementFlux();
+
+    window.onclick = function(event) {
+      if (!event.target.closest('.filter-dropdown')) {
+        document.querySelectorAll('.dropdown-content').forEach(d => d.style.display = 'none');
+      }
+    };
+
+    function openTab(evt, tabName) {
+      document.querySelectorAll(".tab-content").forEach(el => { el.style.display = "none"; el.classList.remove("active"); });
+      document.querySelectorAll(".tab-button").forEach(el => el.className = el.className.replace(" active", ""));
+      document.getElementById(tabName).style.display = "block";
+      document.getElementById(tabName).classList.add("active");
+      if(evt && evt.currentTarget) {
+          evt.currentTarget.className += " active";
+      } else {
+          var btns = document.querySelectorAll(".tab-button");
+          for(var i = 0; i < btns.length; i++) {
+              if (btns[i].innerText.indexOf(tabName) !== -1 || (tabName === 'Flux' && btns[i].innerText.indexOf("Tickets") !== -1)) {
+                  btns[i].className += " active";
+              }
+          }
+      }
+      if (tabName === 'Cartographie') chargerCarteDynamiquement();
+    }
+
+    function voirTickets(recherche) {
+      openTab(null, 'Flux');
+      document.getElementById('champRechercheFlux').value = recherche;
+      filtrerFlux();
+    }
+
+    function toggleDropdown(id) {
+      var d = document.getElementById(id);
+      var isBlock = d.style.display === 'block';
+      document.querySelectorAll('.dropdown-content').forEach(el => el.style.display = 'none');
+      d.style.display = isBlock ? 'none' : 'block';
+    }
+
+    function toggleEdit(index) {
+      var viewDiv = document.getElementById('view-tech-' + index);
+      var editDiv = document.getElementById('edit-tech-' + index);
+      var btnEdit = document.getElementById('btn-edit-' + index);
+      if (editDiv.style.display === 'none') {
+        viewDiv.style.display = 'none'; editDiv.style.display = 'block'; btnEdit.style.display = 'none';
+      } else {
+        viewDiv.style.display = 'block'; editDiv.style.display = 'none'; btnEdit.style.display = 'inline';
+      }
+    }
+
+    // === COMMUNICATIONS API FETCH ===
+    
+    function sauvegarderNote(clientNom, index) {
+      var btnSave = document.getElementById('btn-save-' + index);
+      btnSave.innerText = "Enregistrement..."; btnSave.disabled = true;
+      
+      var data = {
+        action: "sauvegarderNote",
+        client: clientNom,
+        nouvelleNote: document.getElementById('new-note-' + index).value,
+        historique: document.getElementById('hist-note-' + index).value
+      };
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(reponse => {
+          btnSave.innerText = "Enregistrer"; btnSave.disabled = false;
+          if (reponse.erreur) alert(reponse.erreur); 
+          else {
+            document.getElementById('view-tech-' + index).innerHTML = reponse.nouveauDisplay;
+            document.getElementById('hist-note-' + index).value = reponse.nouveauRaw;
+            document.getElementById('new-note-' + index).value = ""; toggleEdit(index); 
+          }
+      }).catch(err => {
+          alert("Erreur de connexion.");
+          btnSave.innerText = "Enregistrer"; btnSave.disabled = false;
+      });
+    }
+
+    function lancerChargementSites() {
+      fetch(API_URL + "?api=sites")
+      .then(res => res.json())
+      .then(resultats => {
+          if (resultats.length === 0 || resultats[0].erreur) { 
+            document.getElementById("resultatsCarnet").innerHTML = "<p style='color: #D7001E;'>" + (resultats[0] ? resultats[0].erreur : "Erreur") + "</p>"; 
+            return; 
+          }
+          sitesDataGlobaux = resultats;
+          initialiserFiltres(resultats);
+          afficherSites(resultats);
+          document.getElementById("zoneFiltres").style.display = "flex";
+      }).catch(e => document.getElementById("resultatsCarnet").innerHTML = "<p>Erreur réseau.</p>");
+    }
+
+    function lancerChargementDocuments() {
+      fetch(API_URL + "?api=docs")
+      .then(res => res.json())
+      .then(resultats => {
+          if (resultats.length === 0 || resultats[0].erreur) { document.getElementById("resultatsRecherche").innerHTML = "<p style='color: #D7001E;'>Erreur</p>"; return; }
+          var html = "<table class='doc-table' id='tableDocuments'><thead><tr><th>Nom du document</th><th>Document</th><th>ALdo</th></tr></thead><tbody>";
+          for (var i = 0; i < resultats.length; i++) {
+            var lienDocHtml = resultats[i].lienDoc ? "<a href='" + resultats[i].lienDoc + "' target='_blank'>Consulter</a>" : "-";
+            var lienAldoHtml = resultats[i].lienAldo ? "<a href='" + resultats[i].lienAldo + "' target='_blank'>Ouvrir dans ALdo</a>" : "-";
+            html += "<tr><td>" + resultats[i].nom + "</td><td>" + lienDocHtml + "</td><td>" + lienAldoHtml + "</td></tr>";
+          }
+          document.getElementById("resultatsRecherche").innerHTML = html + "</tbody></table>";
+      }).catch(e => document.getElementById("resultatsRecherche").innerHTML = "<p>Erreur réseau.</p>");
+    }
+
+    function lancerChargementFlux() {
+      fetch(API_URL + "?api=tickets")
+      .then(res => res.json())
+      .then(resultats => {
+          if (resultats.length > 0 && resultats[0].erreur) {
+              document.getElementById("resultatsFlux").innerHTML = "<p style='color: #D7001E;'><b>Erreur :</b> " + resultats[0].erreur + "</p>";
+              return;
+          }
+          fluxDataGlobaux = resultats;
+          afficherFlux(resultats);
+          if (sitesDataGlobaux.length > 0) filtrerCarnet(); 
+      }).catch(e => document.getElementById("resultatsFlux").innerHTML = "<p>Erreur réseau.</p>");
+    }
+
+    // === GESTION DE L'AFFICHAGE ===
+
+    function initialiserFiltres(data) {
+      var cefs = [], statuts = [], clients = [];
+      data.forEach(function(r) {
+        if(r.secteurCEF && r.secteurCEF !== "N/A" && cefs.indexOf(r.secteurCEF) === -1) cefs.push(r.secteurCEF);
+        if(r.status && r.status !== "N/A" && statuts.indexOf(r.status) === -1) statuts.push(r.status);
+        if(r.client && r.client !== "N/A" && r.client !== "Inconnu" && clients.indexOf(r.client) === -1) clients.push(r.client);
+      });
+      cefs.sort(); statuts.sort(); clients.sort();
+      var cefHtml = ""; cefs.forEach(function(c) { cefHtml += '<label><input type="checkbox" value="' + c + '" onchange="filtrerCarnet()"> ' + c + '</label>'; }); document.getElementById('cef-dropdown').innerHTML = cefHtml;
+      var statutHtml = ""; statuts.forEach(function(s) { statutHtml += '<label><input type="checkbox" value="' + s + '" onchange="filtrerCarnet()"> ' + s + '</label>'; }); document.getElementById('statut-dropdown').innerHTML = statutHtml;
+      var clientHtml = ""; clients.forEach(function(c) { clientHtml += '<option value="' + c + '">'; }); document.getElementById('client-options').innerHTML = clientHtml;
+    }
+
+    function filtrerCarnet() {
+      var checkedCef = document.querySelectorAll('#cef-dropdown input:checked');
+      var selectedCEF = []; for(var i=0; i<checkedCef.length; i++) selectedCEF.push(checkedCef[i].value);
+      var checkedStatut = document.querySelectorAll('#statut-dropdown input:checked');
+      var selectedStatut = []; for(var j=0; j<checkedStatut.length; j++) selectedStatut.push(checkedStatut[j].value);
+      var clientSearch = document.getElementById('client-input').value.toLowerCase();
+
+      var filteredData = sitesDataGlobaux.filter(function(r) {
+        return (selectedCEF.length === 0 || selectedCEF.indexOf(r.secteurCEF) !== -1) &&
+               (selectedStatut.length === 0 || selectedStatut.indexOf(r.status) !== -1) &&
+               (!clientSearch || (r.client && r.client.toLowerCase().indexOf(clientSearch) !== -1));
+      });
+      afficherSites(filteredData);
+      if (isMapLoaded) { actualiserCarte(filteredData); }
+    }
+
+    function afficherSites(donnees) {
+      var divResultats = document.getElementById("resultatsCarnet");
+      if(donnees.length === 0) { divResultats.innerHTML = "<p>Aucun site ne correspond à ces critères.</p>"; return; }
+      var html = "";
+      for (var i = 0; i < donnees.length; i++) {
+        var r = donnees[i];
+        var badgeStyle = "background-color: #EBEBEB; color: #333;";
+        if (r.severite.indexOf("SAFETY") !== -1) badgeStyle = "background-color: #D7001E; color: white;";
+        else if (r.severite.indexOf("HIGH") !== -1) badgeStyle = "background-color: #F58C2D; color: white;";
+        else if (r.severite.indexOf("NO_CRITICAL") !== -1) badgeStyle = "background-color: #4CAF50; color: white;";
+        
+        var lienFiche = r.ficheLink ? "<a href='" + r.ficheLink + "' target='_blank'>" + r.ficheText + "</a>" : r.ficheText;
+        var lienFL5 = r.fl5Link ? "<a href='" + r.fl5Link + "' target='_blank'>" + r.fl5Text + "</a>" : r.fl5Text;
+        var lienTeleflo = r.telefloLink ? "<a href='" + r.telefloLink + "' target='_blank'>" + r.teleflo + "</a>" : r.teleflo;
+        var lienAdresse = r.adresseLink ? "<a href='" + r.adresseLink + "' target='_blank' style='color: #666; text-decoration: none;'>📍 " + r.adresseText + "</a>" : "📍 " + r.adresseText;
+        var safeClient = r.client.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
+        var nbTickets = 0;
+        var motRecherche = "";
+        
+        if (fluxDataGlobaux && fluxDataGlobaux.length > 0) {
+            var motCleClient = (r.client && r.client !== "N/A") ? r.client.trim().toLowerCase() : "";
+            var motCleTeleflo = (r.teleflo && r.teleflo !== "N/A") ? r.teleflo.trim().toLowerCase() : "";
+            var motCleIoT = (r.fl5Text && r.fl5Text !== "N/A") ? r.fl5Text.trim().toLowerCase() : "";
+            var iotRacine = motCleIoT.split('_')[0];
+
+            fluxDataGlobaux.forEach(function(t) {
+                var texteTicket = (t.titre + " " + t.contenu).toLowerCase();
+                var matchClient = (motCleClient.length > 2 && texteTicket.indexOf(motCleClient) !== -1);
+                var matchTeleflo = (motCleTeleflo.length > 3 && texteTicket.indexOf(motCleTeleflo) !== -1);
+                var matchIoT = (iotRacine.length > 5 && texteTicket.indexOf(iotRacine) !== -1);
+                
+                if (matchClient || matchTeleflo || matchIoT) {
+                    nbTickets++;
+                    if (matchIoT) motRecherche = iotRacine;
+                    else if (matchTeleflo) motRecherche = motCleTeleflo;
+                    else if (matchClient) motRecherche = motCleClient;
+                }
+            });
+        }
+
+        var badgeTicketsHTML = "";
+        if (nbTickets > 0) {
+            var safeSearch = motRecherche.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+            badgeTicketsHTML = "<button onclick=\"voirTickets('" + safeSearch + "')\" style='background-color: #D7001E; color: white; border: none; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; cursor: pointer; margin-left: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); vertical-align: middle;'>🎫 " + nbTickets + " Ticket(s)</button>";
+        }
+
+        var format1Decimal = function(val) {
+            var num = parseFloat(val);
+            return isNaN(num) ? val : num.toFixed(1);
+        };
+
+        var uniteBU = (r.client.toUpperCase().indexOf("PIERRE FABRE") !== -1) ? " bar" : " %";
+        var txtBU1 = r.rawBackup1 ? " &nbsp;|&nbsp; <strong>BU 1 :</strong> " + format1Decimal(r.rawBackup1) + uniteBU : "";
+        var txtBU2 = r.rawBackup2 ? " &nbsp;|&nbsp; <strong>BU 2 :</strong> " + format1Decimal(r.rawBackup2) + uniteBU : "";
+        var prodBox = "";
+        
+        if (r.dateUpdate || r.etatInstall || r.vanneProd) {
+            var colorStatut = (r.etatInstall.toUpperCase().indexOf("PRODUCTION") !== -1) ? "#4CAF50" : "#D7001E";
+            var texteMAJ = "Dernière MAJ : " + (r.dateUpdate || "N/A");
+            var styleMAJ = "font-size:11px; color:#666;";
+            
+            if (r.dateUpdate) {
+              var dateStr = r.dateUpdate;
+              if (dateStr.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/)) { dateStr = dateStr.replace(' ', 'T'); }
+              var dateMAJ = new Date(dateStr);
+              if (!isNaN(dateMAJ.getTime())) {
+                var j = ("0" + dateMAJ.getDate()).slice(-2);
+                var m = ("0" + (dateMAJ.getMonth() + 1)).slice(-2);
+                var a = dateMAJ.getFullYear();
+                var h = ("0" + dateMAJ.getHours()).slice(-2);
+                var min = ("0" + dateMAJ.getMinutes()).slice(-2);
+                var dateJolie = j + "/" + m + "/" + a + " " + h + ":" + min;
+                var diffHeures = (new Date() - dateMAJ) / (1000 * 60 * 60);
+                if (diffHeures > 24) {
+                  texteMAJ = "⚠️ Dernière MAJ : " + dateJolie + " (Obsolète > 24h)";
+                  styleMAJ = "font-size:11px; color:#D7001E; font-weight:bold;";
+                } else {
+                  texteMAJ = "Dernière MAJ : " + dateJolie;
+                }
+              }
+            }
+            
+            prodBox = "<div style='background-color: #F4F7FA; padding: 12px; margin-top: 15px; border-radius: 4px; border-left: 3px solid #00B0F0;'><div style='display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;'><h4 style='margin:0; color:#003264; font-size:14px;'>Données de Production IoT</h4><span style='" + styleMAJ + "'>" + texteMAJ + "</span></div><div style='font-size: 13px;'><strong>Vanne :</strong> " + (r.vanneProd || "N/A") + " &nbsp;|&nbsp; <strong>Statut :</strong> <span style='color:" + colorStatut + "; font-weight:bold;'>" + (r.etatInstall || "N/A") + "</span>" + txtBU1 + txtBU2 + "</div></div>";
+        }
+
+        html += "<div class='card'><div class='card-header'><div><h3 style='display: inline-block; margin-right: 5px;'>" + r.client + "</h3>" + badgeTicketsHTML + "<div style='margin-top: 6px; font-size: 14px; color: #666;'>" + lienAdresse + "</div></div><span class='badge' style='" + badgeStyle + "'>" + r.severite + "</span></div>" +
+                "<div class='meta-grid'>" +
+                "<div class='meta-item'><div class='meta-label'>Secteur CEF</div><div class='meta-value'>" + r.secteurCEF + "</div></div>" +
+                "<div class='meta-item'><div class='meta-label'>Back Up (Tech)</div><div class='meta-value'>" + r.backup + "</div></div>" +
+                "<div class='meta-item'><div class='meta-label'>Type / Modèle</div><div class='meta-value'>" + r.type + " / " + r.modele + "</div></div>" +
+                "<div class='meta-item'><div class='meta-label'>Statut Installation</div><div class='meta-value'>" + r.status + "</div></div>" +
+                "<div class='meta-item'><div class='meta-label'>Nom Teleflo</div><div class='meta-value'>" + lienTeleflo + "</div></div>" +
+                "<div class='meta-item'><div class='meta-label'>Fiche Installation</div><div class='meta-value'>" + lienFiche + "</div></div>" +
+                "<div class='meta-item'><div class='meta-label'>IoT4BOS</div><div class='meta-value'>" + lienFL5 + "</div></div></div>" + prodBox +
+                "<div class='text-box'><h4>Action Plan</h4><div style='font-size: 13px; line-height: 1.5;'>" + r.actionPlan + "</div></div>" +
+                "<div class='text-box tech'><h4>Information technicien <button id='btn-edit-" + i + "' class='edit-btn' onclick='toggleEdit(" + i + ")'>Ajouter / Modifier</button></h4><div id='view-tech-" + i + "' style='font-size: 13px; line-height: 1.5;'>" + r.infoTechDisplay + "</div>" +
+                "<div id='edit-tech-" + i + "' style='display: none;'><label style='font-size: 12px; color: #666;'>Nouvelle note :</label><textarea id='new-note-" + i + "' placeholder='Tapez votre intervention ici...' style='height: 70px; margin-bottom: 10px;'></textarea><label style='font-size: 12px; color: #666;'>Historique :</label><textarea id='hist-note-" + i + "' style='height: 100px; color: #555;'>" + r.infoTechRaw + "</textarea><div style='margin-top: 10px; text-align: right;'><button class='edit-btn' style='margin-right: 15px; color: #666; text-decoration: none;' onclick='toggleEdit(" + i + ")'>Annuler</button><button id='btn-save-" + i + "' class='btn-primary' style='padding: 8px 15px; font-size: 13px;' onclick=\"sauvegarderNote('" + safeClient + "', " + i + ")\">Enregistrer</button></div></div></div></div>";
+      }
+      divResultats.innerHTML = html;
+    }
+
+    function filtrerDocuments() {
+      var filter = document.getElementById("champRechercheDoc").value.toLowerCase();
+      var tr = document.getElementById("tableDocuments").getElementsByTagName("tr");
+      for (var i = 1; i < tr.length; i++) {
+        var td = tr[i].getElementsByTagName("td")[0];
+        if (td) tr[i].style.display = (td.textContent || td.innerText).toLowerCase().indexOf(filter) > -1 ? "" : "none";
+      }
+    }
+
+    function afficherFlux(donnees) {
+      var divFlux = document.getElementById("resultatsFlux");
+      if (donnees.length === 0) { divFlux.innerHTML = "<p>Aucun ticket récent trouvé.</p>"; return; }
+      var html = "";
+      for (var i = 0; i < donnees.length; i++) {
+        var item = donnees[i];
+        var headerColor = (item.titre.toLowerCase().indexOf("panne") !== -1 || item.titre.toLowerCase().indexOf("shutdown") !== -1) ? "#D7001E" : "#003264";
+        html += "<div class='card' style='padding: 0; overflow: hidden;'><div style='background-color: " + headerColor + "; padding: 15px 20px;'><a href='" + item.lien + "' target='_blank' style='color: white; text-decoration: none; font-weight: bold; font-size: 16px;'>" + item.titre + "</a></div><div style='padding: 15px 20px;'><div style='font-size: 12px; color: #666; margin-bottom: 12px;'>🗓️ " + item.date + " &nbsp;|&nbsp; 👤 " + item.auteur + "</div><div style='font-size: 13px; line-height: 1.5; color: #333; background: #F8F9FA; padding: 15px; border-radius: 4px; border: 1px solid #EBEBEB; margin: 0;'>" + item.contenu + "</div></div></div>";
+      }
+      divFlux.innerHTML = html;
+    }
+
+    function filtrerFlux() {
+      var search = document.getElementById("champRechercheFlux").value.toLowerCase();
+      var filtered = fluxDataGlobaux.filter(function(item) {
+        return item.titre.toLowerCase().indexOf(search) !== -1 || item.contenu.toLowerCase().indexOf(search) !== -1 || item.auteur.toLowerCase().indexOf(search) !== -1;
+      });
+      afficherFlux(filtered);
+    }
+
+    // --- CARTE LEAFLET (Inchagée) ---
+    function chargerCarteDynamiquement() {
+      if (isMapLoaded) { setTimeout(function() { if (map) map.invalidateSize(); }, 150); return; }
+      if (isMapLoading) return;
+      isMapLoading = true;
+      var cssId = 'leaflet-css';
+      if (!document.getElementById(cssId)) {
+        var head  = document.getElementsByTagName('head')[0];
+        var link  = document.createElement('link'); link.id = cssId; link.rel = 'stylesheet'; link.type = 'text/css'; link.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css';
+        head.appendChild(link);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js';
+      script.onload = function() {
+        document.getElementById('map-loading').style.display = 'none';
+        document.getElementById('map').style.display = 'block';
+        isMapLoaded = true; initMap(sitesDataGlobaux);
+      };
+      script.onerror = function() {
+        document.getElementById('map-loading').style.display = 'none';
+        var errDiv = document.getElementById('map-error'); errDiv.style.display = 'block';
+        errDiv.innerHTML = "⚠️ <b>Le réseau de l'entreprise bloque l'affichage de la carte géographique.</b>";
+      };
+      document.head.appendChild(script);
+    }
+
+    function initMap(sites) {
+      if (!map) {
+        map = L.map('map').setView([43.9, 5.0], 7);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+        markersLayer = L.layerGroup().addTo(map);
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var userIcon = L.divIcon({ html: '<div style="background-color: #007AFF; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 8px rgba(0,122,255,0.8);"></div>', className: '', iconSize: [22, 22], iconAnchor: [11, 11] });
+            L.marker([position.coords.latitude, position.coords.longitude], {icon: userIcon}).addTo(map).bindPopup("<b>Votre position</b>");
+          }, function(error) {});
+        }
+      }
+      actualiserCarte(sites);
+    }
+
+    function actualiserCarte(sites) {
+      if (!markersLayer || typeof L === 'undefined') return;
+      markersLayer.clearLayers();
+      var sitesMajeurs = [
+        { nom: "SIGMA Lavéra", coords: [43.3785, 5.0205], adresse: "Lavéra" },
+        { nom: "ASU Rousset", coords: [43.471210, 5.603156], adresse: "476, Av. Coq, 13790 Rousset" },
+        { nom: "ASU Pierrelatte", coords: [44.367267, 4.708566], adresse: "1 Rue du Gardon, 26700 Pierrelatte" }
+      ];
+      sitesMajeurs.forEach(function(s) {
+        var m = L.marker(s.coords, {icon: creerIconeMarker("MAJEUR")}).addTo(markersLayer);
+        m.bindPopup("<b>" + s.nom + "</b><br><span style='color:#666; font-size:12px;'>📍 " + s.adresse + "</span><br><a href='https://www.google.com/maps/dir/?api=1&destination=" + s.coords[0] + "," + s.coords[1] + "' target='_blank' class='btn-itineraire'>🚗 Y aller (Itinéraire)</a>");
+      });
+      var sitesGroupes = {};
+      sites.forEach(function(s) {
+        if (s.coords) {
+          var latlng = extraireCoordonnees(s.coords);
+          if (latlng) {
+            var cleCoords = latlng[0] + "," + latlng[1];
+            if (!sitesGroupes[cleCoords]) { sitesGroupes[cleCoords] = { latlng: latlng, sites: [], maxSeverite: "NO_CRITICAL" }; }
+            sitesGroupes[cleCoords].sites.push(s);
+            if (s.severite.indexOf("SAFETY") !== -1) { sitesGroupes[cleCoords].maxSeverite = "SAFETY"; } 
+            else if (s.severite.indexOf("HIGH") !== -1 && sitesGroupes[cleCoords].maxSeverite !== "SAFETY") { sitesGroupes[cleCoords].maxSeverite = "HIGH"; }
+          }
+        }
+      });
+      Object.keys(sitesGroupes).forEach(function(cle) {
+        var groupe = sitesGroupes[cle];
+        var m = L.marker(groupe.latlng, {icon: creerIconeMarker(groupe.maxSeverite)}).addTo(markersLayer);
+        var popupHtml = "<div style='max-height: 250px; overflow-y: auto; padding-right: 5px;'>";
+        if (groupe.sites.length > 1) { popupHtml += "<div style='margin-bottom:8px; border-bottom: 1px solid #ccc; padding-bottom:4px; color: #003264;'><b>📍 " + groupe.sites.length + " installations sur ce site</b></div>"; }
+        groupe.sites.forEach(function(s) {
+          popupHtml += "<div style='margin-bottom: 10px; border-bottom: 1px dashed #eee; padding-bottom: 5px;'><b>" + s.client + "</b><br><span style='font-size:12px;'>Modèle : " + s.modele + " | Statut : " + s.status + "</span><br><span style='color:#666; font-size:12px;'>📍 " + s.adresseText + "</span></div>";
+        });
+        popupHtml += "<a href='https://www.google.com/maps/dir/?api=1&destination=" + groupe.latlng[0] + "," + groupe.latlng[1] + "' target='_blank' class='btn-itineraire'>🚗 Y aller (Itinéraire)</a></div>";
+        m.bindPopup(popupHtml);
+      });
+    }
+
+    function creerIconeMarker(severite) {
+      var color = "#4CAF50"; 
+      if (severite.indexOf("SAFETY") !== -1) color = "#D7001E";
+      else if (severite.indexOf("HIGH") !== -1) color = "#F58C2D";
+      else if (severite === "MAJEUR") color = "#003264";
+      var html = "<div style='background-color: " + color + "; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center;'>";
+      if (severite === "MAJEUR") html += "<span style='font-size:12px;'>🏭</span>";
+      html += "</div>";
+      return L.divIcon({ html: html, className: '', iconSize: [30, 30], iconAnchor: [15, 15], popupAnchor: [0, -15] });
+    }
+
+    function extraireCoordonnees(chaine) {
+      if(!chaine) return null;
+      var parts = chaine.split(',');
+      if (parts.length !== 2) return null;
+      var lat = parseFloat(parts[0].replace(/[^0-9.-]/g, ''));
+      var lng = parseFloat(parts[1].replace(/[^0-9.-]/g, ''));
+      if (!isNaN(lat) && !isNaN(lng)) return [lat, lng];
+      return null;
+    }
+  </script>
+</body>
+</html>

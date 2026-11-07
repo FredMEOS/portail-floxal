@@ -1,0 +1,20 @@
+{
+  "name": "Portail FLOXAL",
+  "short_name": "FLOXAL",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#003264",
+  "icons": [
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Air_Liquide_logo.svg/192px-Air_Liquide_logo.svg.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Air_Liquide_logo.svg/512px-Air_Liquide_logo.svg.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
